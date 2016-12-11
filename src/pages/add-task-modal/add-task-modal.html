@@ -1,0 +1,43 @@
+<!--
+  Generated template for the AddTaskModal page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-toolbar color="primary">
+    <ion-title>Add new Task</ion-title>
+    <ion-buttons start>
+        <button (click)="dismiss()">
+          <!-- Visibile in ios -->
+          <span secondary showWhen="ios">Cancel</span>
+          <!-- Visibile in adnroid e windows -->
+          <ion-icon name="md-close" showWhen="android, windows"></ion-icon>
+        </button>
+      </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list no-line class="container">
+    <form (ngSubmit)="submit()">
+      <ion-item>
+          <ion-input placeholder="Task Description" clearInput [(ngModel)]="model.description" name="description" required #descriptionState="ngModel"></ion-input>
+      </ion-item>
+      <ion-item class="msg" color="danger" [hidden]="descriptionState.valid || descriptionState.untouched">
+          La descrizione è obbligatoria
+      </ion-item>
+      <ion-item>
+        <ion-label>Is Important</ion-label>
+        <ion-checkbox color="dark" [(ngModel)]="model.isImportant" name="isImportant"></ion-checkbox>
+      </ion-item>
+      <div class="submit-button">
+        
+        <button block ion-button color="secondary" type="submit" [disabled]="!descriptionState.valid">Add</button>
+      </div>
+</form>
+  </ion-list>
+</ion-content>
