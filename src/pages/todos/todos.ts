@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, ModalController } from 'ionic-angular';
 import { Todo } from '../../app/models/todo';
 import { AddTaskModalPage } from '../add-task-modal/add-task-modal';
+import {TodoService} from '../../providers/todo-service';
+
 /*
   Generated class for the Todos page.
 
@@ -10,34 +12,13 @@ import { AddTaskModalPage } from '../add-task-modal/add-task-modal';
 */
 @Component({
   selector: 'page-todos',
-  templateUrl: 'todos.html'
+  templateUrl: 'todos.html',
+  providers: [TodoService]
 })
 export class TodosPage {
-  private todos:Todo[];
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController) 
-  {
-    this.todos = [
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento", true),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento", false, true),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-        new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento", true),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento", false, true),
-      new Todo ("Primo Elemento"),
-      new Todo ("Primo Elemento")
-
-    ];
-  }
+  
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController, private todoService:TodoService) 
+  {}
   setTodoStyles(item:Todo){
     let styles = {
       'text-decoration': item.isDone ? 'line-through' : 'none',
@@ -47,21 +28,36 @@ export class TodosPage {
   }
 
   toogleTodo(item:Todo){
-      item.isDone = ! item.isDone;
+      this.todoService.toogleTodo(item);
   }
+
+  removeTodo(todo:Todo){
+    this.todoService.removeTodo(todo);
+  }
+
+  showEditTodo(todo:Todo){
+    // Invece di todo:todo dentro le parentesi graffe in typescript visto che hanno lo stesso nome posso passare solo todo
+    let modal = this.modalCtrl.create(AddTaskModalPage, {todo});
+    modal.present();
+
+     modal.onDidDismiss(data => {
+      if(data){
+        this.todoService.updateTodo(todo, data);
+      }
+    });
+  }
+
   showAddTodo(){
     let modal = this.modalCtrl.create(AddTaskModalPage);
     modal.present();
 
     modal.onDidDismiss(data => {
       if(data){
-        this.addTodo(data);
+        this.todoService.addTodo(data);
       }
     });
   }
-  addTodo(todo:Todo){
-    this.todos.push(todo);
-  }
+  
   ionViewDidLoad() {
     console.log('Hello TodosPage Page');
 
